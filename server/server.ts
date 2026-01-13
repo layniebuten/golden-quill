@@ -1,34 +1,59 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import BlurbController from '../database/controllers';
 
 // Server Setup
 const app = express();
+const appRouter = express.Router();
 const PORT = 3000;
+
+// Token import
+dotenv.config();
+const MONGO_TOKEN = process.env.MONGO;
+
+// Mongoose Connection
+mongoose.connect(String(MONGO_TOKEN));
+mongoose.connection.once('open', () => {
+  console.log('Connected to Database');
+});
 
 // Body Parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// App Structure
+// app.get('/', (_req: Request, res: Response) => {
+//   return res
+//     .status(200)
+//     .sendFile(path.resolve(import.meta.dirname, 'index.html'));
+// });
+
 // Routes
-app.get('/', (req: Request, res: Response) => {
-  return res
-    .status(200)
-    .sendFile(path.resolve(import.meta.dirname, 'index.html'));
+app.use('/', appRouter);
+
+appRouter.get('/', BlurbController.getBlurb, (_req: Request, res: Response) => {
+  return res.status(200).json(res.locals.blurbs);
 });
 
-// 404 error handler
-app.use((req: Request, res: Response) => {
+appRouter.post('/', BlurbController.createBlurb, (_req: Request, res: Response) => {
+  return res.status(200).json(res.locals.newBlurb);
+});
+
+// 404 Error Handler
+app.use((_req: Request, res: Response) => {
   return res.sendStatus(404).send('Page not found.');
 });
 
-// global error handler 500
+// Global Error Handler
 interface Error {
   log: string;
   status: number;
   message: { err: string };
 }
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,

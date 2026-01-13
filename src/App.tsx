@@ -1,9 +1,10 @@
-import './App.css';
+import './stylesheets/App.css';
+import Bank from './components/Bank';
 
 function App() {
   return (
     <>
-      <p>Test</p>
+      <Bank />
     </>
   );
 }
