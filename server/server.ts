@@ -11,10 +11,13 @@ const PORT = 3000;
 
 // Token import
 dotenv.config();
-const MONGO_TOKEN = process.env.MONGO;
+const uri = process.env.MONGO;
 
 // Mongoose Connection
-mongoose.connect(String(MONGO_TOKEN));
+const options = {
+  dbName: "GoldenQuill"
+}
+mongoose.connect(String(uri), options);
 mongoose.connection.once('open', () => {
   console.log('Connected to Database');
 });
@@ -31,7 +34,7 @@ app.use(express.json());
 // });
 
 // Routes
-app.use('/', appRouter);
+app.use('/blurbs', appRouter);
 
 appRouter.get('/', BlurbController.getBlurb, (_req: Request, res: Response) => {
   return res.status(200).json(res.locals.blurbs);

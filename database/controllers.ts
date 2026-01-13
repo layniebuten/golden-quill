@@ -11,7 +11,7 @@ interface BlurbController {
 const BlurbController: BlurbController = {
   async createBlurb(req: Request, res: Response, next: NextFunction) {
     try {
-        console.log(req.body)
+      console.log(req.body);
       const { title, text } = req.body;
 
       if (!title || !text) {
@@ -38,8 +38,8 @@ const BlurbController: BlurbController = {
 
   async getBlurb(_req: Request, res: Response, next: NextFunction) {
     try {
-    //   const blurbs = await Blurb.find({}).lean().exec();
-    const blurbs = await Blurb.find();
+      // const blurbs = await Blurb.find({}).lean().exec();
+      const blurbs = await Blurb.find({});
 
       if (!blurbs) {
         return next({
@@ -62,9 +62,9 @@ const BlurbController: BlurbController = {
     }
   },
 
-  async updateBlurb () {},
+  async updateBlurb() {},
 
-  async deleteBlurb () {}
+  async deleteBlurb() {},
 };
 
 export default BlurbController;
